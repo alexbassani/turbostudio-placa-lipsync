@@ -21,6 +21,9 @@
 
 FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04
 
+LABEL org.opencontainers.image.source="https://github.com/alexbassani/turbostudio-placa-lipsync"
+LABEL org.opencontainers.image.description="TurboStudio: o Lipsync por trecho (ComfyUI + LTX-2.3) para a RunPod Serverless. Licencas em /licencas."
+
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \

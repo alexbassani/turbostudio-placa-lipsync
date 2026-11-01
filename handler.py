@@ -35,7 +35,7 @@ import runpod
 COMFY_DIR = os.environ.get("COMFY_DIR", "/comfyui")
 COMFY_URL = "http://127.0.0.1:8188"
 TAMANHO_MAXIMO_ENTRADA = 9 * 1024 * 1024   # o /run aceita 10 MB no total
-TAMANHO_MAXIMO_SAIDA = 9 * 1024 * 1024     # idem para a resposta
+TAMANHO_MAXIMO_SAIDA = 7 * 1024 * 1024     # a resposta viaja em base64 (cresce 4/3) e o limite dela é de 10 MB (📄 terceiros)
 ESPERA_PADRAO_SEG = 900
 _processo_comfy = None
 
