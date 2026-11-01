@@ -1,0 +1,3 @@
+# Estes arquivos rodam em Linux (a imagem da RunPod): fim de linha LF sempre, mesmo no checkout do Windows.
+# Um CR no fim de uma linha do Dockerfile ou do handler.py quebra a construção em silêncio.
+* text eol=lf
