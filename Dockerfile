@@ -66,13 +66,16 @@ COPY licencas/ /licencas/
 
 COPY handler.py /handler.py
 
-# Portão de sanidade na construção: os cinco arquivos existem e o ComfyUI importa.
+# Portão de sanidade na construção: os cinco arquivos existem, o Python compila e o torch diz a versão (a A2 pina esta).
+# ⚠️ NÃO importar o ComfyUI aqui: o comfy.model_management procura a placa ao ser importado, e a construção roda SEM placa
+# ("Found no NVIDIA driver", a falha real de 01/11/2026). Quem prova o ComfyUI de pé é o primeiro trecho na placa.
 RUN test -s ${COMFY_DIR}/models/checkpoints/ltx-2.3-22b-dev-fp8.safetensors \
     && test -s ${COMFY_DIR}/models/latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors \
     && test -s ${COMFY_DIR}/models/loras/ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors \
     && test -s ${COMFY_DIR}/models/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors \
     && test -s ${COMFY_DIR}/models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors \
-    && cd ${COMFY_DIR} && python -c "import nodes, comfy.model_management; print('ComfyUI importa')"
+    && python -m py_compile /handler.py ${COMFY_DIR}/main.py \
+    && python -c "import runpod, requests, torch; print('torch', torch.__version__, 'cuda', torch.version.cuda)"
 
 WORKDIR /
 CMD ["python", "-u", "/handler.py"]
