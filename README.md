@@ -23,7 +23,7 @@ Resposta: `{ "ok": true, "video_base64": "...", "nome": "ltx23_00001_.mp4", "byt
 ou `{ "ok": false, "erro": "em palavras", "detalhe": "RuntimeError", "segundos": 12.0 }`.
 
 Limites (da RunPod, lidos em 01/11/2026): o `/run` aceita 10 MB de pedido e 10 MB de resposta. Um trecho de 8 s
-em 720p mede ≈ 3 MB (medido: 5 s = 1,9 MB). O handler recusa em palavras o que passar de 9 MB.
+em 720p mede ≈ 3 MB (medido: 3,1 MB). O handler recusa em palavras o vídeo acima de 7 MB, porque a resposta viaja em base64.
 
 ## Onde a imagem é construída (não há Docker no PC do Alex, e não precisa)
 
@@ -32,10 +32,11 @@ em 720p mede ≈ 3 MB (medido: 5 s = 1,9 MB). O handler recusa em palavras o que
    Limites dela: a etapa `docker build` em 30 min, o total em 160 min, imagem até 80 GB. ⚠️ O download dos 40 GB
    pode passar dos 30 min do `build` — se passar, o caminho 2 vale para a A2 também.
    A imagem construída assim fica no registro privado da conta dele: serve para medir, **não** serve para o aluno.
-2. **Para os alunos (a imagem PÚBLICA):** construir numa máquina alugada da RunPod (um Pod de CPU por uma hora,
-   centavos) com o `buildah` (sem daemon) e empurrar para o Docker Hub público `turbostudio/placa-lipsync`. A
-   RunPod documenta o caminho equivalente com Bazel; o buildah é a tentativa 1, o Bazel a 2, e o Docker Desktop no
-   PC do Alex (WSL2, 50 GB de upload) a 3. Isso é a etapa A3.
+2. **Para os alunos (a imagem PÚBLICA):** `ghcr.io/alexbassani/turbostudio-placa-lipsync`, construída com o Kaniko
+   numa máquina alugada da RunPod, **sem placa, família `cpu3g`, 16 vCPUs e 160 GB de disco**, com
+   `--compressed-caching=false` (a ferramenta: `apps/docs/feat/speedcut-aluguel-gpu-nov2026/regua/construir-imagem.js`).
+   O que não funcionou: máquina com placa (o driver montado em `/lib` trava o Kaniko), a família `cpu5c` (não subiu)
+   e sem aquela opção (estoura a memória no arquivo de 27 GB). O token fica nos Secrets da RunPod.
 
 Pinos que a A2 fecha: a versão do torch que funcionou (o Dockerfile instala a mais nova do índice cu128 na primeira
 construção) e a placa que o pacote exige (o fp8 de 22 B tem 27 GB; em placa de 24 GB ele transborda para a RAM).
